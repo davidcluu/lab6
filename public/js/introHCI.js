@@ -12,6 +12,7 @@ function initializePage() {
 	$('.project a').click(addProjectDetails);
 
 	$('#colorBtn').click(randomizeColors);
+	$('#picBtn').click(placeRandomPicture);
 }
 
 /*
@@ -50,4 +51,41 @@ function handlePalette(res) {
 	$('h1, h2, h3, h4, h5, h5').css('color', res.colors.hex[2]);
 	$('p').css('color', res.colors.hex[3]);
 	$('.project img').css('opacity', .75);
+}
+
+
+/**/
+function placeRandomPicture() {
+	var long = Math.floor(360 * Math.random()) - 180;
+	var minLong = (long < -170) ? -180 : (long - 10);
+	var maxLong = (long >  170) ?  180 : (long + 10);
+
+	var lat  = Math.floor(180 * Math.random()) - 90;
+	var minLat = (long < -80) ? -90 : (long - 10);
+	var maxLat = (long >  80) ?  90 : (long + 10);
+
+	$.get(
+		"http://www.panoramio.com/map/get_panoramas.php?" +
+		"set=public&from=0&to=20&" +
+		"minx=" + minLong + "&miny=" + minLat + "&maxx=" + maxLong + "&maxy=" + maxLat + "&" +
+		"size=medium&mapfilter=true",
+		handlePicture,
+		'jsonp'
+	);
+}
+
+function handlePicture(res) {
+	if (res.photos.length == 0) {
+		placeRandomPicture();
+	}
+	else {
+		var photo = res.photos[Math.floor(res.photos.length * Math.random())];
+
+		$("#worldPic").html(
+			'<img src="' + photo.photo_file_url + '" class="img" style="margin: 10px auto;"></img>' +
+			'<div>Title: ' + photo.photo_title + '</div>' +
+			'<div>Uploaded: ' + photo.upload_date + '</div>' +
+			'<div>Lat/Long: (' + photo.longitude + ', ' + photo.latitude + ')</div>'
+		);
+	}
 }
