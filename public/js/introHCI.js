@@ -32,8 +32,11 @@ function addProjectDetails(e) {
 
 function handleProjectDetail(res) {
 	$("#project" + res['id'] + " .thumbnail .details").html(
-		res['summary'] +
-		'<img src="' + res['image'] + '" class="detailsImage"></img>'
+		'<img src="' + res['image'] + '" class="detailsImage"></img>' +
+		'<div style="font-weight: bold">' + res['title'] + '</div>' +
+		'<div style="font-style: italic">' + res['date'] + '</div>' +
+		'<br>' +
+		res['summary']
 	);
 }
 
